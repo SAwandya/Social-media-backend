@@ -24,13 +24,11 @@ router.post("/", async (req, res) => {
   user.password = await bcrypt.hash(user.password, salt);
   user = await user.save();
 
-  res.send(user);
-
-  jwt.sign({ _id: user._id }, config.get("jwtPrivateKey"));
+  let token = jwt.sign({ _id: user._id }, config.get("jwtPrivateKey"));
 
   res
     .header("x-auth-token", token)
-    .header("access-control-expose-header", "x-auth-token")
+    .header("access-control-expose-headers", "x-auth-token")
     .send({
       name: user.name,
       email: user.email,

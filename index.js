@@ -5,7 +5,7 @@ const users = require("./routes/users");
 const cors = require("cors");
 const config = require('config');
 
-if(config.get("jwtPrivateKey")){
+if(!config.get("jwtPrivateKey")){
   console.log("FATA ERROR: jwtPrivateKey is not defined");
   process.exit(1);
 }
