@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { Post, validate } = require("../models/post");
 const { User } = require("../models/user");
+const auth = require("../middleware/auth");
 
 router.get("/", async (req, res) => {
   const posts = await Post.find().sort("date");
@@ -9,7 +10,7 @@ router.get("/", async (req, res) => {
   res.send(posts);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
