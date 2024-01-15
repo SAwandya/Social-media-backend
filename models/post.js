@@ -61,8 +61,6 @@ function validatePost(post) {
   const schema = Joi.object({
     topic: Joi.string().required().min(10).max(50),
     description: Joi.string().required().min(10).max(255),
-    photo_path: Joi.required(),
-    userId: Joi.string().required(),
   });
 
   var result = schema.validate(post);
