@@ -6,6 +6,9 @@ const posts = require("./routes/posts");
 const auth = require("./routes/auth");
 const cors = require("cors");
 const config = require("config");
+const multer = require("multer");
+
+const upload = multer();
 
 if (!config.get("jwtPrivateKey")) {
   console.log("FATA ERROR: jwtPrivateKey is not defined");
@@ -18,6 +21,8 @@ mongoose
   .catch((err) => console.log("Could not connect to MongoDB"));
 
 app.use(cors()); // Enable CORS for all routes
+
+app.use(upload.any());
 
 app.use(express.json());
 
