@@ -24,7 +24,7 @@ router.get("/", async (req, res) => {
   res.send(posts);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   console.log(req.body);
 
   try {
@@ -32,33 +32,38 @@ router.post("/", async (req, res) => {
       folder: "posts",
     });
 
+    console.log(result.secure_url);
+    console.log(req.body.topic);
+    console.log(req.body.description);
+
+    const { error } = validate({
+      'topic': req.body.topic,
+      'description': req.body.description
+    });
+    if (error) return res.status(400).send(error.details[0].message + " fuck ");
+
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(400).send("Invalide user.");
+
+    let post = new Post({
+      topic: req.body.topic,
+      description: req.body.description,
+      photo_path: result.secure_url,
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        username: user.username,
+        password: user.password,
+      },
+    });
+
+    post = await post.save();
+
     res.send(result);
   } catch (ex) {
     console.log(ex);
   }
-
-  // const { error } = validate(req.body);
-  // if (error) return res.status(400).send(error.details[0].message);
-
-  // const user = await User.findById(req.user._id);
-  // if (!user) return res.status(400).send("Invalide user.");
-
-  // let post = new Post({
-  //   topic: req.body.topic,
-  //   description: req.body.description,
-  //   photo_path: req.file.path,
-  //   user: {
-  //     _id: user._id,
-  //     name: user.name,
-  //     email: user.email,
-  //     username: user.username,
-  //     password: user.password,
-  //   },
-  // });
-
-  // post = await post.save();
-
-  // res.send(req.file.path);
 });
 
 module.exports = router;

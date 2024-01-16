@@ -17,8 +17,6 @@ const postSchema = new mongoose.Schema({
   photo_path: {
     type: String,
     required: true,
-    minlength: 3,
-    maxlength: 50,
   },
 
   user: {
